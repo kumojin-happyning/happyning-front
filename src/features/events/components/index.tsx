@@ -1,5 +1,5 @@
-import EventList from "./EventList.component";
-import EventListSkeleton from "./EventListSkeleton.component";
+import EventList from "./eventList/EventList.component";
+import EventListSkeleton from "./eventListSkeleton/EventListSkeleton.component";
 
 export {
     EventList,

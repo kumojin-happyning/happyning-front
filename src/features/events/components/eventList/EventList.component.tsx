@@ -1,7 +1,7 @@
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import React from "react";
-import EventModel from "../models/Event.model";
+import EventModel from "../../models/Event.model";
 
 interface EventListProps {
     value: EventModel[];

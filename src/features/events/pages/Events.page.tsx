@@ -16,7 +16,7 @@ const EventsPage = () => {
             }
             {
                 !isLoading && (
-                    <EventList value={events}/>
+                    <EventList value={events} test-id="eventList"/>
                 )
             }
         </>
