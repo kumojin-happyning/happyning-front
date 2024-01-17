@@ -35,4 +35,6 @@ class EventRepository {
     }
 }
 
-export default new EventRepository();
+const eventRepository = new EventRepository();
+
+export default eventRepository;
