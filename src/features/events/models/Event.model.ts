@@ -1,8 +1,8 @@
 export default interface EventModel {
     id: number;
-    title: string;
+    name: string;
     description: string;
-    start: String;
-    end: String;
+    start: string;
+    end: string;
     timezone: string;
 }

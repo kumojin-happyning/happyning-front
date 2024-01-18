@@ -22,8 +22,8 @@ class EventService {
      */
     private convertDates(events: EventModel[]) {
         for (const event of events) {
-            event.start = moment.tz(event.start, event.timezone).format('DD/MM/YYYY HH:mm:ss');
-            event.end = moment.tz(event.end, event.timezone).format('DD/MM/YYYY HH:mm:ss');
+            event.start = moment(event.start).clone().tz(event.timezone).format('DD-MM-YYYY HH:mm:ss');
+            event.end = moment(event.end).clone().tz(event.timezone).format('DD-MM-YYYY HH:mm:ss');
         }
     }
 }

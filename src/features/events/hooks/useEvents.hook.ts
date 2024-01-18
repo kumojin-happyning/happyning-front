@@ -3,7 +3,7 @@ import EventModel from "../models/Event.model";
 import EventService from "../services/Event.service";
 
 const useEvents = () => {
-    const [events, setEvents] = React.useState<EventModel[]>([]);
+    const [events, setEvents] = React.useState<EventModel[]>([] as EventModel[]);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const [error, setError] = React.useState<string | null>(null);
 
@@ -17,9 +17,9 @@ const useEvents = () => {
      * Réupère la liste des évènements
      */
     const getEvents = async () => {
+        setIsLoading(true);
+        setError(null);
         try {
-            setIsLoading(true);
-            setError(null);
             const events = await EventService.findAllEvents();
             setEvents(events);
         } catch (e: any) {
