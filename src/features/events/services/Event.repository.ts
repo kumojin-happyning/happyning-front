@@ -19,7 +19,6 @@ class EventRepository {
      */
     async findAll(): Promise<EventModel[]> {
         const response = await fetch(this.url, {
-            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -35,10 +34,16 @@ class EventRepository {
         const response = await fetch(this.url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify(event)
         });
+
+        if (!response.ok) {
+            throw new Error("Impossible de créer l'évènement. Vérifiez les informations saisies.");
+        }
+
         return await response.json();
     }
 }
