@@ -26,10 +26,23 @@ const EventList = (props: EventListProps) => {
                 marginTop: "2rem",
             }}
         >
-            <Column field="name" header="Name" />
-            <Column field="description" header="Description" />
-            <Column field="start" header="Début" />
-            <Column field="end" header="Fin" />
+            <Column field="name" header="Name"/>
+            <Column field="description" header="Description"/>
+            <Column
+                field="start"
+                header="Début"
+            />
+            <Column
+                field="end"
+                header="Fin"
+            />
+            <Column
+                field="timezone"
+                header="Heure locale"
+                body={(e: EventModel) => {
+                    return e.timezone.split("/")[1]
+                }}
+            />
         </DataTable>
     );
 }
