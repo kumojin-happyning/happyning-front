@@ -39,6 +39,11 @@ class EventRepository {
             },
             body: JSON.stringify(event)
         });
+
+        if (!response.ok) {
+            throw new Error("Impossible de créer l'évènement. Vérifiez les informations saisies.");
+        }
+
         return await response.json();
     }
 }

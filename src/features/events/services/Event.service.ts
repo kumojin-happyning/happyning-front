@@ -1,6 +1,7 @@
 import EventRepository from "./Event.repository";
 import EventModel from "../models/Event.model";
 import moment from "moment-timezone";
+import ConvertDates from "../utils/ConvertDates";
 
 class EventService {
     async findAllEvents(): Promise<EventModel[]> {
@@ -22,8 +23,8 @@ class EventService {
      */
     private convertDates(events: EventModel[]) {
         for (const event of events) {
-            event.start = moment(event.start).clone().tz(event.timezone).format('DD-MM-YYYY HH:mm:ss');
-            event.end = moment(event.end).clone().tz(event.timezone).format('DD-MM-YYYY HH:mm:ss');
+            event.start = ConvertDates.toLocalDate(event.start, event.timezone);
+            event.end = ConvertDates.toLocalDate(event.end, event.timezone);
         }
     }
 }
