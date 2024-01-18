@@ -13,6 +13,9 @@ class EventService {
     }
 
     async createEvent(event: EventModel): Promise<EventModel> {
+        moment.tz.setDefault(event.timezone);
+        event.start = moment(event.start).utc(false).format();
+        event.end = moment(event.end).utc(false).format();
         return await EventRepository.create(event);
     }
 

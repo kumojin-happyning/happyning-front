@@ -12,6 +12,7 @@ import "./newEvent.style.css"
 import {EventCreateFooter} from "./eventCreateFooter/EventCreateFooter.component";
 import ConvertDates from "../../utils/ConvertDates";
 import {Toast} from "primereact/toast";
+import {utc} from "moment";
 
 interface NewEventFormProps {
     events: EventModel[];
@@ -25,10 +26,7 @@ const NewEventDialog = (props: NewEventFormProps) => {
     const [timezones, setTimezones] = React.useState<string[]>(moment.tz.names());
     const [newEventStart, setNewEventStart] = React.useState<Nullable<Date>>(null);
     const [newEventEnd, setNewEventEnd] = React.useState<Nullable<Date>>(null);
-    const [newEvent, setNewEvent] = React.useState<EventModel>(
-        {
-            timezone: moment.tz.guess(),
-        } as EventModel);
+    const [newEvent, setNewEvent] = React.useState<EventModel>({} as EventModel);
 
     const toast = useRef<Toast>(null);
 
@@ -64,11 +62,11 @@ const NewEventDialog = (props: NewEventFormProps) => {
     }
 
     const showSuccess = (message: string) => {
-        toast.current?.show({severity:'success', summary: 'Success', detail: message, life: 3000});
+        toast.current?.show({severity: 'success', summary: 'Success', detail: message, life: 3000});
     }
 
     const showError = (message: string) => {
-        toast.current?.show({severity:'error', summary: 'Error', detail: message, life: 3000});
+        toast.current?.show({severity: 'error', summary: 'Error', detail: message, life: 3000});
     }
 
     return (
@@ -118,11 +116,17 @@ const NewEventDialog = (props: NewEventFormProps) => {
 
                         <label htmlFor="start">Début</label>
                         <Calendar
+                            disabled={newEvent.timezone === undefined}
                             showIcon
                             value={newEventStart || null}
                             onChange={(e) => {
                                 setNewEventStart(e.value)
-                                setNewEvent({...newEvent, start: e.value!.toISOString()})
+                                setNewEvent(
+                                    {
+                                        ...newEvent,
+                                        start: moment(e.value!.toString()).format("YYYY-MM-DDTHH:mm:ss")
+                                    }
+                                )
                             }}
                             minDate={new Date()}
                             id="start"
@@ -137,12 +141,16 @@ const NewEventDialog = (props: NewEventFormProps) => {
                     <div>
                         <label htmlFor="end">Fin</label>
                         <Calendar
+                            disabled={newEvent.timezone === undefined}
                             minDate={newEventStart || new Date()}
                             showIcon
                             value={newEventEnd || null}
                             onChange={(e) => {
                                 setNewEventEnd(e.value)
-                                setNewEvent({...newEvent, end: e.value!.toISOString()})
+                                setNewEvent({
+                                    ...newEvent,
+                                    end: moment(e.value!.toString()).format("YYYY-MM-DDTHH:mm:ss")
+                                })
                             }}
                             id="end"
                             showTime
