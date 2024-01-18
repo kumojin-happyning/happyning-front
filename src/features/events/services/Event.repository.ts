@@ -1,7 +1,10 @@
 import EventModel from "../models/Event.model";
+import * as Process from "process";
 
 class EventRepository {
-    private _url: string = 'http://localhost/api/events';
+    private _url: string = process.env.NODE_ENV === "production"
+        ? "/api/events"
+        : 'http://localhost:8080/api/events';
 
     set url(url: string) {
         this._url = url;
@@ -15,7 +18,12 @@ class EventRepository {
      * Récupère la liste des événements
      */
     async findAll(): Promise<EventModel[]> {
-        const response = await fetch(this.url);
+        const response = await fetch(this.url, {
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return await response.json();
     }
 
