@@ -24,8 +24,6 @@ const NewEventDialog = (props: NewEventFormProps) => {
 
     const {events, setDialogVisible, isDialogVisible} = props;
     const [timezones, setTimezones] = React.useState<string[]>(moment.tz.names());
-    const [newEventStart, setNewEventStart] = React.useState<Nullable<Date>>(null);
-    const [newEventEnd, setNewEventEnd] = React.useState<Nullable<Date>>(null);
     const [newEvent, setNewEvent] = React.useState<EventModel>({} as EventModel);
 
     const toast = useRef<Toast>(null);
@@ -33,11 +31,7 @@ const NewEventDialog = (props: NewEventFormProps) => {
     const submit = async () => {
         try {
             await EventService.createEvent(newEvent)
-            events.push({
-                ...newEvent,
-                start: ConvertDates.toLocalDate(newEvent.start, newEvent.timezone),
-                end: ConvertDates.toLocalDate(newEvent.end, newEvent.timezone)
-            })
+            events.push(newEvent)
             showSuccess('Évènement créé avec succès')
         } catch (e) {
             console.error(e)
@@ -45,8 +39,6 @@ const NewEventDialog = (props: NewEventFormProps) => {
         } finally {
             setDialogVisible(false)
             setNewEvent({} as EventModel)
-            setNewEventStart(null)
-            setNewEventEnd(null)
         }
     }
 
@@ -86,8 +78,6 @@ const NewEventDialog = (props: NewEventFormProps) => {
                         onCancel={() => {
                             setNewEvent({} as EventModel)
                             setDialogVisible(false)
-                            setNewEventEnd(null)
-                            setNewEventStart(null)
                         }}
                     />
                 }
@@ -116,15 +106,13 @@ const NewEventDialog = (props: NewEventFormProps) => {
 
                         <label htmlFor="start">Début</label>
                         <Calendar
-                            disabled={newEvent.timezone === undefined}
                             showIcon
-                            value={newEventStart || null}
+                            value={newEvent.start || null}
                             onChange={(e) => {
-                                setNewEventStart(e.value)
                                 setNewEvent(
                                     {
                                         ...newEvent,
-                                        start: moment(e.value!.toString()).format("YYYY-MM-DDTHH:mm:ss")
+                                        start: new Date(e.value!.toString())
                                     }
                                 )
                             }}
@@ -141,15 +129,13 @@ const NewEventDialog = (props: NewEventFormProps) => {
                     <div>
                         <label htmlFor="end">Fin</label>
                         <Calendar
-                            disabled={newEvent.timezone === undefined}
-                            minDate={newEventStart || new Date()}
+                            minDate={newEvent.start || new Date()}
                             showIcon
-                            value={newEventEnd || null}
+                            value={newEvent.end || null}
                             onChange={(e) => {
-                                setNewEventEnd(e.value)
                                 setNewEvent({
                                     ...newEvent,
-                                    end: moment(e.value!.toString()).format("YYYY-MM-DDTHH:mm:ss")
+                                    end: new Date(e.value!.toString())
                                 })
                             }}
                             id="end"
@@ -159,22 +145,6 @@ const NewEventDialog = (props: NewEventFormProps) => {
                                 return e.toLocaleString()
                             }}
                             hideOnDateTimeSelect
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="timezone">Fuseau Horaire</label>
-                        <AutoComplete
-                            value={newEvent.timezone}
-                            suggestions={timezones}
-                            onChange={(e) => {
-                                setNewEvent({...newEvent, timezone: e.value})
-                            }}
-                            id="timezone"
-                            dropdown
-                            completeMethod={searchTimezones}
-                            onEmptied={
-                                () => setTimezones(moment.tz.names)
-                            }
                         />
                     </div>
                 </div>

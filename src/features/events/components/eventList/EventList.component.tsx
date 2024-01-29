@@ -2,6 +2,7 @@ import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import React from "react";
 import EventModel from "../../models/Event.model";
+import ConvertDates from "../../utils/ConvertDates";
 
 interface EventListProps {
     value: EventModel[];
@@ -12,6 +13,7 @@ interface EventListProps {
  *
  */
 const EventList = (props: EventListProps) => {
+
     return (
         <DataTable
             value={props.value}
@@ -31,16 +33,15 @@ const EventList = (props: EventListProps) => {
             <Column
                 field="start"
                 header="Début"
+                body={(event: EventModel) => {
+                    return ConvertDates.formatDate(event.start)
+                }}
             />
             <Column
                 field="end"
                 header="Fin"
-            />
-            <Column
-                field="timezone"
-                header="Heure locale"
-                body={(e: EventModel) => {
-                    return e.timezone.split("/")[1]
+                body={(event: EventModel) => {
+                    return ConvertDates.formatDate(event.end)
                 }}
             />
         </DataTable>

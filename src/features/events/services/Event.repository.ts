@@ -1,10 +1,9 @@
 import EventModel from "../models/Event.model";
-import * as Process from "process";
 
 class EventRepository {
     private _url: string = process.env.NODE_ENV === "production"
         ? "/api/events"
-        : 'https://localhost/api/events';
+        : 'http://localhost:8080/api/events';
 
     set url(url: string) {
         this._url = url;
