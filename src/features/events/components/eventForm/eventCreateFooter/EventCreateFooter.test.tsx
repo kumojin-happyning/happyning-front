@@ -7,6 +7,7 @@ describe('EventCreateFooter', () => {
         const {baseElement} = render(<EventCreateFooter
             onSubmit={() => {}}
             onCancel={() => {}}
+            isSubmitDisabled={false}
         />
         );
         expect(baseElement).toBeTruthy();

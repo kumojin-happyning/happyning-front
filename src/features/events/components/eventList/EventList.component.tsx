@@ -2,9 +2,12 @@ import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import React from "react";
 import EventModel from "../../models/Event.model";
+import ConvertDates from "../../utils/ConvertDates";
+import moment from "moment-timezone";
 
 interface EventListProps {
     value: EventModel[];
+    header: React.ReactNode;
 }
 
 /**
@@ -12,6 +15,7 @@ interface EventListProps {
  *
  */
 const EventList = (props: EventListProps) => {
+
     return (
         <DataTable
             value={props.value}
@@ -25,22 +29,24 @@ const EventList = (props: EventListProps) => {
                 margin: "auto",
                 marginTop: "2rem",
             }}
+            header={
+                props.header
+            }
         >
             <Column field="name" header="Name"/>
             <Column field="description" header="Description"/>
             <Column
                 field="start"
-                header="Début"
+                header={"Début (" + moment.tz.guess().split("/")[1] +")"}
+                body={(event: EventModel) => {
+                    return ConvertDates.formatDate(event.start)
+                }}
             />
             <Column
                 field="end"
-                header="Fin"
-            />
-            <Column
-                field="timezone"
-                header="Heure locale"
-                body={(e: EventModel) => {
-                    return e.timezone.split("/")[1]
+                header={"Fin (" + moment.tz.guess().split("/")[1] +")"}
+                body={(event: EventModel) => {
+                    return ConvertDates.formatDate(event.end)
                 }}
             />
         </DataTable>

@@ -1,10 +1,9 @@
 import EventModel from "../models/Event.model";
-import * as Process from "process";
 
 class EventRepository {
     private _url: string = process.env.NODE_ENV === "production"
         ? "/api/events"
-        : 'https://localhost/api/events';
+        : 'http://localhost:8080/api/events';
 
     set url(url: string) {
         this._url = url;
@@ -31,6 +30,7 @@ class EventRepository {
      * @param event
      */
     async create(event: EventModel): Promise<EventModel> {
+
         const response = await fetch(this.url, {
             method: 'POST',
             headers: {
@@ -41,7 +41,7 @@ class EventRepository {
         });
 
         if (!response.ok) {
-            throw new Error("Impossible de créer l'évènement. Vérifiez les informations saisies.");
+            throw new Error("Error while creating event");
         }
 
         return await response.json();
