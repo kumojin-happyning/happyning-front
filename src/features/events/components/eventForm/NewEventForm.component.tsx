@@ -9,6 +9,7 @@ import EventService from "../../services/Event.service";
 import "./newEvent.style.css"
 import {EventCreateFooter} from "./eventCreateFooter/EventCreateFooter.component";
 import {Toast} from "primereact/toast";
+import DEFAULT_EVENT from "../../constants/DEFAULT_EVENT";
 
 interface NewEventFormProps {
     events: EventModel[];
@@ -19,7 +20,7 @@ interface NewEventFormProps {
 const NewEventDialog = (props: NewEventFormProps) => {
 
     const {events, setDialogVisible, isDialogVisible} = props;
-    const [newEvent, setNewEvent] = React.useState<EventModel>({} as EventModel);
+    const [newEvent, setNewEvent] = React.useState<EventModel>(DEFAULT_EVENT);
 
     const toast = useRef<Toast>(null);
 
@@ -43,7 +44,7 @@ const NewEventDialog = (props: NewEventFormProps) => {
             showError('Une erreur est survenue lors de la création de l\'évènement')
         } finally {
             setDialogVisible(false)
-            setNewEvent({} as EventModel)
+            setNewEvent(DEFAULT_EVENT)
         }
     }
 
@@ -74,7 +75,7 @@ const NewEventDialog = (props: NewEventFormProps) => {
                     <EventCreateFooter
                         onSubmit={submit}
                         onCancel={() => {
-                            setNewEvent({} as EventModel)
+                            setNewEvent(DEFAULT_EVENT)
                             setDialogVisible(false)
                         }}
                         isSubmitDisabled={isDisabled()}
