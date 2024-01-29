@@ -10,7 +10,7 @@ class ConvertDates {
      * @param date
      */
     static formatDate(date: Date) {
-        return new Date(date).toLocaleString() + " (" + moment.tz.guess().split("/")[1] + ")";
+        return new Date(date).toLocaleString();
     }
 }
 

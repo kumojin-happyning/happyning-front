@@ -5,7 +5,7 @@ import EventModel from "../../models/Event.model";
 describe('EventsList', () => {
 
     it('should render successfully', () => {
-        const {baseElement} = render(<EventList value={[] as EventModel[]}/>);
+        const {baseElement} = render(<EventList value={[] as EventModel[]} header={<></>}/>);
         expect(baseElement).toBeTruthy();
     });
 });
