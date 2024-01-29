@@ -30,6 +30,7 @@ class EventRepository {
      * @param event
      */
     async create(event: EventModel): Promise<EventModel> {
+
         const response = await fetch(this.url, {
             method: 'POST',
             headers: {
@@ -40,7 +41,7 @@ class EventRepository {
         });
 
         if (!response.ok) {
-            throw new Error("Impossible de créer l'évènement. Vérifiez les informations saisies.");
+            throw new Error("Error while creating event");
         }
 
         return await response.json();

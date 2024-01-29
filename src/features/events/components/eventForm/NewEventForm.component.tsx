@@ -2,17 +2,13 @@ import React, {useRef} from 'react';
 import {InputText} from "primereact/inputtext";
 import {InputTextarea} from "primereact/inputtextarea";
 import {Calendar} from "primereact/calendar";
-import {AutoComplete} from "primereact/autocomplete";
 import moment from "moment-timezone";
 import EventModel from "../../models/Event.model";
 import {Dialog} from "primereact/dialog";
 import EventService from "../../services/Event.service";
-import {Nullable} from "primereact/ts-helpers";
 import "./newEvent.style.css"
 import {EventCreateFooter} from "./eventCreateFooter/EventCreateFooter.component";
-import ConvertDates from "../../utils/ConvertDates";
 import {Toast} from "primereact/toast";
-import {utc} from "moment";
 
 interface NewEventFormProps {
     events: EventModel[];
@@ -23,10 +19,19 @@ interface NewEventFormProps {
 const NewEventDialog = (props: NewEventFormProps) => {
 
     const {events, setDialogVisible, isDialogVisible} = props;
-    const [timezones, setTimezones] = React.useState<string[]>(moment.tz.names());
     const [newEvent, setNewEvent] = React.useState<EventModel>({} as EventModel);
 
     const toast = useRef<Toast>(null);
+
+    const isDisabled = () => {
+        return !newEvent.name
+            || !newEvent.start
+            || !newEvent.end
+            || !newEvent.description
+            || newEvent.name.length > 33
+            || newEvent.description.length > 255
+            || newEvent.start > newEvent.end
+    }
 
     const submit = async () => {
         try {
@@ -35,18 +40,11 @@ const NewEventDialog = (props: NewEventFormProps) => {
             showSuccess('Évènement créé avec succès')
         } catch (e) {
             console.error(e)
-            showError('Erreur lors de la création de l\'évènement')
+            showError('Une erreur est survenue lors de la création de l\'évènement')
         } finally {
             setDialogVisible(false)
             setNewEvent({} as EventModel)
         }
-    }
-
-    const searchTimezones = (event: { query: string; }) => {
-        const results = moment.tz.names().filter((timezone) => {
-            return timezone.toLowerCase().includes(event.query.toLowerCase());
-        });
-        setTimezones(results);
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -79,17 +77,22 @@ const NewEventDialog = (props: NewEventFormProps) => {
                             setNewEvent({} as EventModel)
                             setDialogVisible(false)
                         }}
+                        isSubmitDisabled={isDisabled()}
                     />
                 }
             >
                 <div className="form-container">
                     <div className="form-input">
-                        <label htmlFor="name">Titre</label>
+                        <label htmlFor="name">Titre *</label>
                         <InputText
                             value={newEvent.name}
                             onChange={handleChange}
                             id="name"
+                            className={newEvent.name && newEvent.name.length > 33 ? "p-invalid" : ""}
                         />
+                        {newEvent.name.length > 33 &&
+                            <small className="p-error">Le titre ne peut pas dépasser 33 caractères</small>
+                        }
                     </div>
                     <div>
 
@@ -100,11 +103,14 @@ const NewEventDialog = (props: NewEventFormProps) => {
                             id="description"
                             rows={5}
                             cols={30}
+                            className={newEvent.description && newEvent.description.length > 255 ? "p-invalid" : ""}
                         />
+                        {newEvent.description.length > 255 &&
+                            <small className="p-error">La description ne peut pas dépasser 255 caractères</small>
+                        }
                     </div>
                     <div>
-
-                        <label htmlFor="start">Début</label>
+                        <label htmlFor="start">Début *</label>
                         <Calendar
                             showIcon
                             value={newEvent.start || null}
@@ -124,10 +130,14 @@ const NewEventDialog = (props: NewEventFormProps) => {
                                 return e.toLocaleString()
                             }}
                             hideOnDateTimeSelect
+                            className={newEvent.start && newEvent.start > newEvent.end ? "p-invalid" : ""}
                         />
+                        {newEvent.start && newEvent.start > newEvent.end &&
+                            <small className="p-error">La date de début ne peut pas être après la date de fin</small>
+                        }
                     </div>
                     <div>
-                        <label htmlFor="end">Fin</label>
+                        <label htmlFor="end">Fin *</label>
                         <Calendar
                             minDate={newEvent.start || new Date()}
                             showIcon
@@ -145,7 +155,11 @@ const NewEventDialog = (props: NewEventFormProps) => {
                                 return e.toLocaleString()
                             }}
                             hideOnDateTimeSelect
+                            className={newEvent.end && newEvent.end < newEvent.start ? "p-invalid" : ""}
                         />
+                        {newEvent.end && newEvent.end < newEvent.start &&
+                            <small className="p-error">La date de fin ne peut pas être avant la date de début</small>
+                        }
                     </div>
                 </div>
             </Dialog>

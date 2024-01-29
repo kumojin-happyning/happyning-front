@@ -4,6 +4,7 @@ import React from "react";
 interface EventCreateFooterProps {
     onSubmit: () => void;
     onCancel: () => void;
+    isSubmitDisabled: boolean;
 }
 
 export function EventCreateFooter(props: EventCreateFooterProps) {
@@ -13,6 +14,7 @@ export function EventCreateFooter(props: EventCreateFooterProps) {
                 label="Créer"
                 onClick={props.onSubmit}
                 className="p-button-success"
+                disabled={props.isSubmitDisabled}
             />
             <Button
                 label="Annuler"
